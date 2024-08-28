@@ -1,5 +1,4 @@
 import { Component, EventEmitter, inject, Input, Output, WritableSignal } from '@angular/core';
-import { User } from 'firebase/auth';
 import { CloudStorageService } from '../../../shared/services/cloud-storage-service/cloud-storage.service';
 import { RegistrationService } from '../../../shared/services/authentication/registration-service/registration.service';
 import { Router } from '@angular/router';

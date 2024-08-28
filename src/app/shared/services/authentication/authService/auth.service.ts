@@ -1,8 +1,10 @@
 import { inject, Injectable, signal } from "@angular/core";
-import { Auth, confirmPasswordReset, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from "@angular/fire/auth";
+import { Auth, confirmPasswordReset, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, user } from "@angular/fire/auth";
 import { Router } from "@angular/router";
 import { FirebaseError } from "firebase/app";
 import { onAuthStateChanged, User, UserCredential } from "firebase/auth";
+import { UserService } from "../../firestore/user-service/user.service";
+import { LocalStorageService } from "../../local-storage-service/local-storage.service";
 
 
 
@@ -12,26 +14,15 @@ import { onAuthStateChanged, User, UserCredential } from "firebase/auth";
 export class AuthService {
   auth = inject(Auth);
   router = inject(Router);
-  errorCode: string | null = null;
-  loggedInUserSignal = signal<User | null>(null)
-
-  constructor() {}
-
-  authChangeDetection() {
-    onAuthStateChanged(this.auth, user => {
-      if (user) {
-        this.loggedInUserSignal.set(user);
-        console.log(this.loggedInUserSignal())
-      } else {
-        this.loggedInUserSignal.set(null);
-        console.log(this.loggedInUserSignal())
-      }
-    })
-  }
+  userService = inject(UserService);
+  localStorageService = inject(LocalStorageService);
+  errorCode: string | null = null
 
   async login(email: string, password: string): Promise<void> {
     try {
-      await signInWithEmailAndPassword(this.auth, email, password);
+      let response: UserCredential = await signInWithEmailAndPassword(this.auth, email, password);
+      await this.userService.updateUserLoginState(response.user.uid, 'loggedIn');
+      this.localStorageService.saveUserId(response.user.uid);
       this.router.navigateByUrl('board');
     } catch (err: any) {
       console.error(err);
@@ -40,9 +31,14 @@ export class AuthService {
     }
   }
 
+
+
   async logout(): Promise<void> {
     try {
       await signOut(this.auth);
+      if (this.auth.currentUser) {
+        await this.userService.updateUserLoginState(this.auth.currentUser.uid, 'loggedOut');
+      }
       window.open('login', '_self');
     } catch (err: any) {
       console.error(err);

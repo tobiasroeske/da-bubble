@@ -1,1 +1,13 @@
 <p>board-layout works!</p>
+<!-- @if (currentUser==null) {
+    <h1>Loading ... </h1>
+} @else {
+    <h1>My Name is {{ currentUser.displayName }}</h1>
+} -->
+@if (userList.length == 0) {
+    <h1>Loading</h1>
+} @else {
+    <h1>My Name is {{ currentUser?.name }}</h1>
+}
+
+<button (click)="logout()">Logout</button>
