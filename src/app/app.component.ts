@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { FirestoreService } from './shared/services/firestore-service/firestore.service';
+import { Unsubscribe } from 'firebase/auth';
 
 @Component({
   selector: 'app-root',
@@ -9,5 +11,6 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'bubble-new';
+  title = 'DABubble';
+  
 }

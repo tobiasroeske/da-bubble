@@ -1,0 +1,58 @@
+<div [class.flex-center]="smallScreen">
+    <header [ngStyle]="{'justify-content': forgotPassword ? 'flex-start' : 'space-between'}">
+        <div class="logo-box">
+            <img src="/img/logo.png" alt="">
+            <h1>DABubble</h1>
+
+        </div>
+        @if (!forgotPassword && !smallScreen) {
+        <div class="register-box">
+            <span>Neu bei DABubble?</span>
+            <a href="register">Konto erstellen</a>
+        </div>
+        }
+    </header>
+    <div class="content" [ngStyle]="{'overflow-x': forgotPassword ? 'hidden' : 'unset'}">
+        <div class="top" [ngStyle]="{'flex': forgotPassword ? 'unset' : '1'}">
+            <div class="login-container">
+                @if (!forgotPassword) {
+                <app-sign-in></app-sign-in>
+                <!-- } @else {
+                <app-forgot-password (emailSent)="showConfirmation($event)"
+                    (goBack)="openPasswordDialog($event)"></app-forgot-password> -->
+                }
+            </div>
+        </div>
+
+        @if (smallScreen && !forgotPassword) {
+        <div class="register-box">
+            <span>Neu bei DABubble?</span>
+            <a href="register">Konto erstellen</a>
+        </div>
+        }
+        @if (!smallScreen && !forgotPassword) {
+        <footer>
+            <a href="impressum" target="_blank">Impressum</a>
+            <a href="datenschutz" target="_blank">Datenschutz</a>
+        </footer>
+        }
+        @if (forgotPassword) {
+        <div [class.slide-in]="confirmationMessage" class="confirmation-message">
+            <img src="/icons/email_send.png" alt="">
+            E-Mail gesendet
+        </div>
+        }
+    </div>
+
+    <div class="intro">
+        <div class="max-width-container">
+            <div class="intro-logo-container">
+                <img src="/img/logo_big.png" alt="">
+                <div class="headline">
+                    <h1>DABubble</h1>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

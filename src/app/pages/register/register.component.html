@@ -1,0 +1,29 @@
+<div id="register" [class.flex-center]="smallScreen">
+    <header>
+        <div class="logo-box">
+            <img src="/img/logo.png" alt="">
+            <h1>DABubble</h1>
+        </div>
+    </header>
+    <div class="content">
+        <div class="login-container">
+            @if (!next) {
+            <app-signup-form (showNextPage)="goToAvatarPicker($event)"></app-signup-form>
+            } @else {
+            <app-avatar-picker (signUpSuccessful)="signup($event)" (goBack)="goToAvatarPicker($event)"></app-avatar-picker>
+            }
+        </div>
+        
+        @if (registerService.errorCode == 'auth/email-already-in-use') {
+        <div class="error-message slide-in">
+            E-Mail-Adresse wir bereits verwendet.
+        </div>
+
+        } @else {
+        <div [class.slide-in]="registerService.signUpSuccessful" class="confirmation-message">
+            Konto erfolgreich erstellt!
+        </div>
+        }
+
+    </div>
+</div>
