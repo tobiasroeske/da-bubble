@@ -2,6 +2,7 @@ import { Component, EventEmitter, inject, Input, Output, WritableSignal } from '
 import { User } from 'firebase/auth';
 import { CloudStorageService } from '../../../shared/services/cloud-storage-service/cloud-storage.service';
 import { RegistrationService } from '../../../shared/services/authentication/registration-service/registration.service';
+import { Router } from '@angular/router';
 
 type UserForRegistration = {
   name: string,
@@ -23,6 +24,7 @@ export class AvatarPickerComponent {
 
   registerService = inject(RegistrationService);
   cloudStorageService = inject(CloudStorageService);
+  router = inject(Router)
 
   userSignal: WritableSignal<UserForRegistration>;
   user: UserForRegistration;
@@ -58,8 +60,10 @@ export class AvatarPickerComponent {
 
   async completeSignup(): Promise<void> {
     await this.registerService.register(this.user.email, this.user.password, this.user.name, this.user.avatarPath);
-    this.userSignal.set(this.user);
-    this.signUpSuccessful.emit(true);
+    this.registerService.signUpSuccessful = true;
+    setTimeout(() => {
+      this.router.navigateByUrl('board');
+    }, 1500)
   }
 
   pickAvatar(i: number): void {

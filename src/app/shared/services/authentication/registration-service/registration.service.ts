@@ -3,7 +3,8 @@ import { Auth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
 import { User } from '../../../models/user.model';
-import { FirestoreService } from '../../firestore-service/firestore.service';
+import { UserService } from '../../firestore/user-service/user.service';
+import { AuthService } from '../authService/auth.service';
 
 type UserForRegistration = {
   name: string,
@@ -18,8 +19,8 @@ type UserForRegistration = {
 export class RegistrationService {
   auth = inject(Auth);
   router = inject(Router);
-  firestoreService = inject(FirestoreService);
-  user: User;
+  userService = inject(UserService);
+  authService = inject(AuthService);
   errorCode: string | null = null;
   signUpSuccessful: boolean = false;
   newUserSignal = signal<UserForRegistration>({
@@ -29,18 +30,15 @@ export class RegistrationService {
     avatarPath: ''
   })
 
-  constructor() {
-    this.user = new User()
-  }
-
   async register(email: string, password: string, name: string, avatarPath: string): Promise<void> {
     try {
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
       if (userCredential.user) {
         await updateProfile(userCredential.user, { photoURL: avatarPath, displayName: name });
-        //await this.firestoreService.addUser(userCredential.user.uid, this.setNewUserObject(userCredential.user.uid));
+        let newUser: User = this.setNewUserObject(userCredential.user.uid, name, email, avatarPath);
+        await this.userService.addUser(newUser, userCredential.user.uid)
         await sendEmailVerification(userCredential.user);
-        //this.router.navigateByUrl('board');
+        this.authService.loggedInUserSignal.set(userCredential.user);
       }
     } catch (err: any) {
       console.error(err);
@@ -48,17 +46,17 @@ export class RegistrationService {
     }
   }
 
-  getNewUserSignal() {
-    return this.newUserSignal;
+  setNewUserObject(id:string, name: string, avatarPath: string, email:string): User {
+    return {
+      id: id,
+      name: name,
+      avatarPath: avatarPath,
+      email: email,
+      loginState: 'loggedIn'
+    }
   }
 
-  setNewUserObject(userId: string): User {
-    return {
-      id: userId,
-      name: this.user.name || '',
-      email: this.user.email || '',
-      avatarPath: this.user.avatarPath || '',
-      loginState: 'loggedOut',
-    };
+  getNewUserSignal() {
+    return this.newUserSignal;
   }
 }

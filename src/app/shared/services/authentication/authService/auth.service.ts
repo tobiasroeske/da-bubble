@@ -1,7 +1,8 @@
-import { inject, Injectable } from "@angular/core";
+import { inject, Injectable, signal } from "@angular/core";
 import { Auth, confirmPasswordReset, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from "@angular/fire/auth";
 import { Router } from "@angular/router";
 import { FirebaseError } from "firebase/app";
+import { onAuthStateChanged, User, UserCredential } from "firebase/auth";
 
 
 
@@ -12,8 +13,21 @@ export class AuthService {
   auth = inject(Auth);
   router = inject(Router);
   errorCode: string | null = null;
+  loggedInUserSignal = signal<User | null>(null)
 
   constructor() {}
+
+  authChangeDetection() {
+    onAuthStateChanged(this.auth, user => {
+      if (user) {
+        this.loggedInUserSignal.set(user);
+        console.log(this.loggedInUserSignal())
+      } else {
+        this.loggedInUserSignal.set(null);
+        console.log(this.loggedInUserSignal())
+      }
+    })
+  }
 
   async login(email: string, password: string): Promise<void> {
     try {

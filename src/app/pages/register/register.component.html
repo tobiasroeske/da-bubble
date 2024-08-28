@@ -20,7 +20,7 @@
         </div>
 
         } @else {
-        <div [class.slide-in]="registerService.signUpSuccessful" class="confirmation-message">
+        <div [ngClass]="{'confirmation-message': true, 'slide-in': registerService.signUpSuccessful}">
             Konto erfolgreich erstellt!
         </div>
         }

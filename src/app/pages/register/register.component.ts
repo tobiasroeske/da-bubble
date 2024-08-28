@@ -1,9 +1,9 @@
 import { Component, HostListener, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { RegistrationService } from '../../shared/services/authentication/registration-service/registration.service';
-import { User } from '../../shared/models/user.model';
 import { SignupFormComponent } from './signup-form/signup-form.component';
 import { AvatarPickerComponent } from './avatar-picker/avatar-picker.component';
+import { CommonModule } from '@angular/common';
 
 type UserForRegistration = {
   name: string,
@@ -15,7 +15,7 @@ type UserForRegistration = {
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [SignupFormComponent, AvatarPickerComponent],
+  imports: [SignupFormComponent, AvatarPickerComponent, CommonModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })
