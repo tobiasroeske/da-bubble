@@ -38,7 +38,6 @@ export class RegistrationService {
         let newUser: User = this.setNewUserObject(userCredential.user.uid, name, email, avatarPath);
         await this.userService.addUser(newUser, userCredential.user.uid)
         await sendEmailVerification(userCredential.user);
-        this.authService.loggedInUserSignal.set(userCredential.user);
       }
     } catch (err: any) {
       console.error(err);
