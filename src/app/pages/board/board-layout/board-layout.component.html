@@ -7,6 +7,7 @@
     <app-loading></app-loading>
 } 
 @if (currentUserSignal() && userLoggedIn()) {
-    <h1>My name is {{ currentUserSignal()!.name }}</h1>
-    <button (click)="logout()">Logout</button>
+    <div class="board">
+        <app-board-toolbar [currentUser]="currentUserSignal"></app-board-toolbar>
+    </div>
 }

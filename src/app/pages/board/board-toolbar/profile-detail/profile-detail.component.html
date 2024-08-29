@@ -1,0 +1,46 @@
+<div class="container" (click)="stopPropagation($event)">
+    <ng-container>
+        <div class="headline">
+            <h3>Profil</h3>
+            <img src="/icons/close.svg" alt="" (click)="closeProfile($event)">
+        </div>
+        <img src="{{ currentUser()?.avatarPath }}" alt="" class="avatar-img">
+        <div class="name-box">
+            <div>
+                <h2>{{ currentUser()?.name }}</h2>
+                @if (currentUser()?.id != GUESTID) {
+                @if (boardStateService.mobileView()) {
+                <img (click)="openEditor($event)" src="/icons/edit_square.svg" alt="" class="edit-icon">
+                } @else {
+                <span (click)="openEditor($event)">Bearbeiten</span>
+                }
+                }
+            </div>
+            @if (currentUser()?.loginState == 'loggedIn') {
+            <span class="status">
+                <img src="/img/status_online.png" alt="" class="state-icon"> Online
+            </span>
+            } @else if (currentUser()?.loginState == 'idle') {
+            <span class="status">
+                <img src="/icons/user_idle.png" alt="" class="state-icon"> Abwesend
+            </span>
+            } @else if (currentUser()?.loginState == 'loggedOut') {
+            <span class="status">
+                <img src="/icons/user_offline.png" alt="" class="state-icon"> Offline
+            </span>
+            }
+
+        </div>
+
+        <div class="email-container">
+            <img src="/img/mail_black.png" alt="">
+            <div>
+                <span>Email Adresse</span>
+                <span class="email-address">{{ currentUser()?.email }}</span>
+            </div>
+        </div>
+    </ng-container>
+
+
+
+</div>

@@ -55,6 +55,15 @@ export class UserService implements OnDestroy {
     }
   }
 
+  async updateUserDoc(userId:string, newUser: User) {
+    try {
+      let userRef = this.getUserDocReference(userId);
+      await updateDoc(userRef, {...newUser});
+    } catch (error) {
+      
+    }
+  }
+
   getUserSignal() {
     return this.userSignal;
   }
