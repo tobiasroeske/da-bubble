@@ -1,38 +1,66 @@
-import { Component, inject, OnDestroy, OnInit, WritableSignal } from '@angular/core';
+import { Component, effect, inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
 import { AuthService } from '../../../shared/services/authentication/authService/auth.service';
 import { User } from '../../../shared/models/user.model';
 import { UserService } from '../../../shared/services/firestore/user-service/user.service';
 import { Subscription } from 'rxjs';
-import { LocalStorageService } from '../../../shared/services/local-storage-service/local-storage.service';
+import { User as AuthUser } from '@angular/fire/auth';
+import { CommonModule } from '@angular/common';
+import { BackToLoginComponent } from '../back-to-login/back-to-login.component';
+import { LoadingComponent } from '../loading/loading.component';
 
 @Component({
   selector: 'app-board-layout',
   standalone: true,
-  imports: [],
+  imports: [CommonModule, BackToLoginComponent, LoadingComponent],
   templateUrl: './board-layout.component.html',
   styleUrl: './board-layout.component.scss'
 })
-export class BoardLayoutComponent implements OnDestroy {
+export class BoardLayoutComponent implements OnDestroy, OnInit {
   authService = inject(AuthService);
   userService = inject(UserService)
-  localStorageService = inject(LocalStorageService)
   userSignal = this.userService.getUserSignal();
   userList: User[] = [];
-  private userSubscription: Subscription;
-  currentUser: User | undefined;
+  currentUserSignal = signal<User | null | undefined>(undefined);
+  private currentUserSubscription: Subscription | null = null
+  userLoggedIn = signal<boolean>(true)
+  userTimeout: any;
 
-  constructor() {
-    this.userSubscription = this.userService.user$.subscribe(users => {
-      this.userList = users;
-      console.log(this.userList);
-      this.currentUser = this.userList.find(user => user.id == this.localStorageService.loadUserId())
+  ngOnInit(): void {
+    this.subscribeCurrentUser();
+    this.handleUserTimeout();
+  }
+
+  subscribeCurrentUser() {
+    this.currentUserSubscription = this.authService.user$.subscribe((user: AuthUser) => {
+      if (user) {
+        this.currentUserSignal.set({
+          id: user.uid,
+          name: user.displayName,
+          email: user.email,
+          avatarPath: user.photoURL,
+          loginState: 'loggedIn'
+        }) 
+      } else {
+        this.currentUserSignal.set(null);
+        
+      }
+      console.log(this.currentUserSignal())
     })
   }
 
+  handleUserTimeout() {
+    this.userTimeout = setTimeout(() => {
+      if (this.currentUserSignal() == null) {
+        this.userLoggedIn.set(false);
+      } else {
+        this.userLoggedIn.set(true);
+      }
+    },5000)
+  }
+
   ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
-    this.userSubscription.unsubscribe();
+    this.currentUserSubscription?.unsubscribe();
+    clearTimeout(this.userTimeout);
   }
 
   async logout() {

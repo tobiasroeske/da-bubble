@@ -1,12 +1,9 @@
 import { inject, Injectable, signal } from "@angular/core";
 import { Auth, confirmPasswordReset, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, user } from "@angular/fire/auth";
 import { Router } from "@angular/router";
-import { FirebaseError } from "firebase/app";
-import { onAuthStateChanged, User, UserCredential } from "firebase/auth";
+import { UserCredential } from "firebase/auth";
 import { UserService } from "../../firestore/user-service/user.service";
-import { LocalStorageService } from "../../local-storage-service/local-storage.service";
-
-
+import { User } from "../../../models/user.model";
 
 @Injectable({
   providedIn: 'root',
@@ -15,14 +12,15 @@ export class AuthService {
   auth = inject(Auth);
   router = inject(Router);
   userService = inject(UserService);
-  localStorageService = inject(LocalStorageService);
-  errorCode: string | null = null
 
-  async login(email: string, password: string): Promise<void> {
+  errorCode: string | null = null
+  user$ = user(this.auth)
+  currentUserSignal = signal<User | null | undefined>(undefined)
+
+  async login(email: string, password: string) {
     try {
       let response: UserCredential = await signInWithEmailAndPassword(this.auth, email, password);
       await this.userService.updateUserLoginState(response.user.uid, 'loggedIn');
-      this.localStorageService.saveUserId(response.user.uid);
       this.router.navigateByUrl('board');
     } catch (err: any) {
       console.error(err);
@@ -30,8 +28,6 @@ export class AuthService {
       throw err;
     }
   }
-
-
 
   async logout(): Promise<void> {
     try {
