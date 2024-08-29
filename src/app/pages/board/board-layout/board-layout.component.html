@@ -1,13 +1,12 @@
-<p>board-layout works!</p>
-<!-- @if (currentUser==null) {
-    <h1>Loading ... </h1>
-} @else {
-    <h1>My Name is {{ currentUser.displayName }}</h1>
-} -->
-@if (userList.length == 0) {
-    <h1>Loading</h1>
-} @else {
-    <h1>My Name is {{ currentUser?.name }}</h1>
+
+@if (!userLoggedIn()) {
+    <app-back-to-login></app-back-to-login>
 }
 
-<button (click)="logout()">Logout</button>
+@if (currentUserSignal() == null && userLoggedIn()) {
+    <app-loading></app-loading>
+} 
+@if (currentUserSignal() && userLoggedIn()) {
+    <h1>My name is {{ currentUserSignal()!.name }}</h1>
+    <button (click)="logout()">Logout</button>
+}
