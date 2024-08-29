@@ -7,19 +7,21 @@ import { User as AuthUser } from '@angular/fire/auth';
 import { CommonModule } from '@angular/common';
 import { BackToLoginComponent } from '../back-to-login/back-to-login.component';
 import { LoadingComponent } from '../loading/loading.component';
+import { BoardToolbarComponent } from '../board-toolbar/board-toolbar.component';
+import { BoardStateService } from '../../../shared/services/board-state-service/board-state.service';
 
 @Component({
   selector: 'app-board-layout',
   standalone: true,
-  imports: [CommonModule, BackToLoginComponent, LoadingComponent],
+  imports: [CommonModule, BackToLoginComponent, LoadingComponent, BoardToolbarComponent],
   templateUrl: './board-layout.component.html',
   styleUrl: './board-layout.component.scss'
 })
 export class BoardLayoutComponent implements OnDestroy, OnInit {
   authService = inject(AuthService);
-  userService = inject(UserService)
+  userService = inject(UserService);
+  boardStateService = inject(BoardStateService);
   userSignal = this.userService.getUserSignal();
-  userList: User[] = [];
   currentUserSignal = signal<User | null | undefined>(undefined);
   private currentUserSubscription: Subscription | null = null
   userLoggedIn = signal<boolean>(true)

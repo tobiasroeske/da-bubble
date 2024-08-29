@@ -1,0 +1,67 @@
+<div>
+    <!-- if -->
+    @if (!boardStateService.mobileView() || boardStateService.mobileView() && boardStateService.sidenavTranslate()) {
+    <div class="logo-container">
+        <img src="/img/logo.png" alt="logo" class="logo">
+        <img src="img/logoName.png" alt="" class="logo-headline">
+    </div>
+    }
+
+    @else {
+    <div class="logo-container-workspace">
+        <img src="/icons/toolbar_back_arrow.png" alt="" class="back-arrow" (click)="boardStateService.toggleSidenav()">
+        <img src="/img/workspaceLogo.png" alt="" class="workspace-logo">
+        <h3>Devspace</h3>
+    </div>
+    }
+
+    <div class="input-search-container">
+        <input name="searchText" type="text" placeholder="Coding learning durchsuchen">
+        <img src="/img/search.png" alt="">
+    </div>
+
+    <div class="user-container" (click)="toggleProfileMenu()">
+        <span>{{ currentUser()?.name }}</span>
+        <img class="account-photo" src="{{ currentUser()?.avatarPath }}" alt="account-photo">
+
+        @if (currentUser()?.loginState == 'idle') {
+        <img src="/icons/user_idle.png" alt="" class="state-icon">
+        } @else {
+        <img src="/icons/user_online.png" alt="" class="state-icon">
+        }
+        <svg class="arrow-down-user" width="10" height="7" viewBox="0 0 10 7" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+                d="M4.12483 5.875L0.874832 2.625C0.478999 2.22917 0.390665 1.77625 0.609832 1.26625C0.828165 0.755417 1.21858 0.5 1.78108 0.5H8.21858C8.78108 0.5 9.1715 0.755417 9.38983 1.26625C9.609 1.77625 9.52067 2.22917 9.12483 2.625L5.87483 5.875C5.74983 6 5.61442 6.09375 5.46858 6.15625C5.32275 6.21875 5.1665 6.25 4.99983 6.25C4.83317 6.25 4.67692 6.21875 4.53108 6.15625C4.38525 6.09375 4.24983 6 4.12483 5.875Z"
+                fill="black" />
+        </svg>
+    </div>
+
+    @if (showOverlay()) {
+    <div class="popup" (click)="closeAllDialogs()">
+        <!--Desktop Version -->
+        @if (showProfileMenu()) {
+            <div class="profile-options">
+                <!-- <button class="btn-no-style profile-btn" (click)="showNotificationDialog($event)">
+                    @if (boardServ.currentUser.notification.length > 0) {
+                    <div class="alert-icon"></div>
+                    }
+                    Benachrichtigungen
+                </button> -->
+                <button class="btn-no-style profile-btn" (click)="openProfileDetail($event)">Profil</button>
+                <button class="btn-no-style profile-btn" (click)="authService.logout()">Log out</button>
+            </div>
+        } @else if (showProfileDetail()) {
+            <div class="profile-dialog">
+                <app-profile-detail [currentUser]="currentUser" (editorOpen)="openEditor($event)" (closeProfileDetail)="closeAllDialogs()"></app-profile-detail>
+            </div>
+        } @else if (showEditor()) {
+            <div class="profile-dialog">
+                <app-profile-editor [currentUser]="currentUser" (showEditor)="closeAllDialogs()"></app-profile-editor>
+            </div>
+        }
+    </div>
+    }
+
+
+</div>

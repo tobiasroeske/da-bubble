@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
 import { updateProfile, verifyBeforeUpdateEmail } from 'firebase/auth';
 
@@ -7,6 +7,7 @@ import { updateProfile, verifyBeforeUpdateEmail } from 'firebase/auth';
 })
 export class UserProfileService {
   auth = inject(Auth);
+  errorCode = signal<string>('');
   
 
   constructor() {}
@@ -17,7 +18,9 @@ export class UserProfileService {
         await updateProfile(this.auth.currentUser, changes);
       }
     } catch (err: any) {
-      console.error(err);
+      
+      this.errorCode.set(err.code);
+      console.error('Error while updating auth user profile', err.code);
       throw err;
     }
   }
@@ -29,8 +32,12 @@ export class UserProfileService {
         await verifyBeforeUpdateEmail(currentUser, email);
       }
     } catch (err: any) {
-      console.error(err);
-      throw err;
+      if (err.code == 'auth/requires-recent-login') {
+        this.errorCode.set(err.code);
+      } else {
+        console.error('Error while updating auth user email', err.code);
+        throw err;
+      }
     }
   }
 }
