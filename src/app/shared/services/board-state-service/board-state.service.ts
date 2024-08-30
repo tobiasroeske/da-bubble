@@ -13,6 +13,7 @@ export class BoardStateService {
   newMessageInputOpen = signal<boolean>(false);
   showNewMessageInput = signal<boolean>(false);
   showAddChannelDialog = signal<boolean>(false);
+  indexOfCurrentChannel = signal<number>(0);
 
   constructor() {
     this.checkScreenSize();
@@ -30,6 +31,11 @@ export class BoardStateService {
 
   closeAddChannelDialog() {
     this.showAddChannelDialog.set(false);
+  }
+
+  hideChatField() {
+    return (this.sidenavTranslate() && this.mobileView()) ||
+      (this.threadTranslate() && this.mobileView());
   }
 
   stopPropagation(e: Event) {

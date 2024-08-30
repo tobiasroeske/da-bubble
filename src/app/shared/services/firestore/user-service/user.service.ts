@@ -2,18 +2,13 @@ import { inject, Injectable, OnDestroy, signal } from '@angular/core';
 import { Firestore, onSnapshot, collection, setDoc, doc } from '@angular/fire/firestore';
 import { User } from '../../../models/user.model';
 import { Unsubscribe, updateDoc } from 'firebase/firestore';
-import { BehaviorSubject } from 'rxjs';
-
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService implements OnDestroy {
   private firestore: Firestore = inject(Firestore);
-  userSubject = new BehaviorSubject<User[]>([]);
-  user$ = this.userSubject.asObservable();
   userSignal = signal<User[]>([])
-  loadingSignal = signal<boolean>(true);
   unsubUserList: Unsubscribe;
 
   constructor() {
@@ -26,15 +21,12 @@ export class UserService implements OnDestroy {
 
   subscribeToUsers() {
     return onSnapshot(this.getUserCollectionReference(), data => {
-      this.loadingSignal.set(true);
       let updatedUserList: User[] = [];
       data.forEach(doc => {
         let user: User = { ...doc.data() } as User;
         updatedUserList.push(user);
       })
-      this.userSubject.next(updatedUserList);
       this.userSignal.set(updatedUserList);
-      this.loadingSignal.set(false);
     })
   }
 
@@ -66,10 +58,6 @@ export class UserService implements OnDestroy {
 
   getUserSignal() {
     return this.userSignal;
-  }
-
-  getLoadingSignal() {
-    return this.loadingSignal;
   }
 
   getUserCollectionReference() {
