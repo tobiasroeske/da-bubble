@@ -3,23 +3,40 @@ import { Injectable, OnInit, signal } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class BoardStateService implements OnInit {
+export class BoardStateService {
   profileOptionsSig = signal<boolean>(false)
   mobileView = signal<boolean>(false);
   tabletView = signal<boolean>(false);
   threadTranslate = signal<boolean>(false);
-  sidenavTranslate = signal<boolean>(false);
+  sidenavTranslate = signal<boolean>(true);
   emojiPickerSmall = signal<boolean>(false);
   newMessageInputOpen = signal<boolean>(false);
+  showNewMessageInput = signal<boolean>(false);
+  showAddChannelDialog = signal<boolean>(false);
+
+  constructor() {
+    this.checkScreenSize();
+    window.addEventListener('resize', () => this.checkScreenSize())
+  }
+
 
   toggleProfileOptions() {
     this.profileOptionsSig.update(prev => !prev);
   }
+  
+  openAddChannelDialog() {
+    this.showAddChannelDialog.set(true);
+  }
 
-  ngOnInit(): void {
-   this.checkScreenSize()
+  closeAddChannelDialog() {
+    this.showAddChannelDialog.set(false);
+  }
+
+  stopPropagation(e: Event) {
+    e.stopPropagation();
   }
   
+
   checkScreenSize() {
     if (window.innerWidth <= 1500) {
       this.showDesktopView();
@@ -55,5 +72,6 @@ export class BoardStateService implements OnInit {
       this.newMessageInputOpen.set(false);
     }
   }
+
 
 }
