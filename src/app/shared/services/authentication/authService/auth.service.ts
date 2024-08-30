@@ -1,9 +1,10 @@
 import { inject, Injectable, signal } from "@angular/core";
-import { Auth, confirmPasswordReset, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, user } from "@angular/fire/auth";
+import { Auth, confirmPasswordReset, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, user, User as AuthCurrentUser } from "@angular/fire/auth";
 import { Router } from "@angular/router";
 import { UserCredential } from "firebase/auth";
 import { UserService } from "../../firestore/user-service/user.service";
 import { User } from "../../../models/user.model";
+import { AuthStateService } from "../auth-state-service/auth-state.service";
 
 @Injectable({
   providedIn: 'root',
@@ -12,10 +13,9 @@ export class AuthService {
   auth = inject(Auth);
   router = inject(Router);
   userService = inject(UserService);
+  authStateService = inject(AuthStateService);
 
   errorCode: string | null = null
-  user$ = user(this.auth)
-  currentUserSignal = signal<User | null | undefined>(undefined)
 
   async login(email: string, password: string) {
     try {
@@ -28,6 +28,8 @@ export class AuthService {
       throw err;
     }
   }
+
+  
 
   async logout(): Promise<void> {
     try {

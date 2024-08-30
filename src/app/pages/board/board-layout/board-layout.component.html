@@ -1,13 +1,22 @@
-
 @if (!userLoggedIn()) {
-    <app-back-to-login></app-back-to-login>
+<app-back-to-login></app-back-to-login>
 }
 
 @if (currentUserSignal() == null && userLoggedIn()) {
-    <app-loading></app-loading>
-} 
+<app-loading></app-loading>
+}
 @if (currentUserSignal() && userLoggedIn()) {
-    <div class="board">
-        <app-board-toolbar [currentUser]="currentUserSignal"></app-board-toolbar>
+<div class="board">
+    <app-board-toolbar [currentUser]="currentUserSignal"></app-board-toolbar>
+    <div class="view" [ngStyle]="{'gap.px': boardStateService.mobileView() ? '0' : '16'}">
+        <app-sidenav class="sidenav" [channels]="channelSignal"
+            [ngStyle]="{'width': boardStateService.mobileView() && boardStateService.sidenavTranslate() ? '100%' : boardStateService.sidenavTranslate() ? '366px' : '0' }"></app-sidenav>
     </div>
+
+    <!-- Dialogs -->
+    @if (boardStateService.showAddChannelDialog()) {
+    <app-add-channel-dialog></app-add-channel-dialog>
+    }
+
+</div>
 }

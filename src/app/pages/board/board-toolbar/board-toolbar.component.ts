@@ -45,4 +45,8 @@ export class BoardToolbarComponent {
     this.showProfileDetail.set(false);
   }
 
+  stopPropagation(event: Event) {
+    event.stopPropagation();
+  }
+
 }

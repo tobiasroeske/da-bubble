@@ -60,6 +60,42 @@
                 <app-profile-editor [currentUser]="currentUser" (showEditor)="closeAllDialogs()"></app-profile-editor>
             </div>
         }
+
+        <!--Mobile Version-->
+        @if (showProfileMenu()) {
+            <div class="profile-options-mobile" [class.slide-in]="showProfileMenu()"
+                (click)="stopPropagation($event)">
+    
+                <img src="/icons/profile_slide_icon.png" alt="">
+                <div class="options">
+                    <!-- <button class="btn-no-style profile-btn" (click)="showNotificationDialog($event)">
+                        <img src="/icons/notification_icon.svg" alt="">
+                        @if (boardServ.currentUser.notification.length > 0) {
+                        <div class="alert-icon"></div>
+                        }
+                        Benachrichtigungen
+                    </button> -->
+                    <button class="btn-no-style profile-btn" (click)="openProfileDetail($event)"><img
+                            src="/icons/profile_icon.png" alt="">Profil</button>
+                    <button class="btn-no-style profile-btn" (click)="authService.logout()"><img
+                            src="/icons/logout_icon.png" alt="">Logout</button>
+                </div>
+    
+            </div>
+            }@else if (showProfileDetail()) {
+            <div class="profile-dialog-mobile" (click)="stopPropagation($event)">
+                <app-profile-detail [currentUser]="currentUser" (editorOpen)="openEditor($event)" (closeProfileDetail)="closeAllDialogs()"></app-profile-detail>
+            </div>
+            } @else if (showEditor()) {
+            <div class="profile-dialog-mobile" (click)="stopPropagation($event)">
+                <app-profile-editor [currentUser]="currentUser" (showEditor)="closeAllDialogs()"></app-profile-editor>
+            </div>
+            <!-- } @else if (notificationsOpen) {
+            <div class="profile-dialog-mobile" [class.padding-right]="notificationsOpen"
+                (click)="boardServ.stopPropagation($event)">
+                <app-notifications (notificationsOpen)="closeNotificationsDialog($event)"></app-notifications>
+            </div> -->
+            }
     </div>
     }
 
