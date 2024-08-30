@@ -11,7 +11,12 @@
     <div class="view" [ngStyle]="{'gap.px': boardStateService.mobileView() ? '0' : '16'}">
         <app-sidenav class="sidenav" [channels]="channelSignal"
             [ngStyle]="{'width': boardStateService.mobileView() && boardStateService.sidenavTranslate() ? '100%' : boardStateService.sidenavTranslate() ? '366px' : '0' }"></app-sidenav>
+        
+        <app-chatfield class="chatField"
+        [ngStyle]="{'display': boardStateService.hideChatField() ? 'none' : 'flex'}" [channels]="channelSignal"></app-chatfield>
     </div>
+
+
 
     <!-- Dialogs -->
     @if (boardStateService.showAddChannelDialog()) {

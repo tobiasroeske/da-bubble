@@ -13,11 +13,12 @@ import { Channel } from '../../../shared/models/channel.model';
 import { ChannelService } from '../../../shared/services/firestore/channel-service/channel.service';
 import { AuthStateService } from '../../../shared/services/authentication/auth-state-service/auth-state.service';
 import { AddChannelDialogComponent } from "../add-channel-dialog/add-channel-dialog.component";
+import { ChatfieldComponent } from "../chatfield/chatfield.component";
 
 @Component({
   selector: 'app-board-layout',
   standalone: true,
-  imports: [CommonModule, BackToLoginComponent, LoadingComponent, BoardToolbarComponent, SidenavComponent, AddChannelDialogComponent],
+  imports: [CommonModule, BackToLoginComponent, LoadingComponent, BoardToolbarComponent, SidenavComponent, AddChannelDialogComponent, ChatfieldComponent],
   templateUrl: './board-layout.component.html',
   styleUrl: './board-layout.component.scss'
 })
@@ -33,27 +34,10 @@ export class BoardLayoutComponent implements OnDestroy, OnInit {
   userTimeout: any;
   channelSubscription: Subscription | null = null;
 
-  constructor() {
-
-    effect(() => {
-      this.logData();
-    })
-  }
-
   ngOnInit(): void {
-    // this.channelSubscription = this.channelService.channel$.subscribe(channel => {
-    //   this.channelsSignal.set(channel);
-    //   console.log(this.channelsSignal());
-    // })
     this.handleUserTimeout();
   }
 
-  logData() {
-    let currentUser = this.currentUserSignal();
-    let loadedChannels = this.channelSignal();
-    console.log('loaded channels', loadedChannels);
-    console.log('Current is..', currentUser);
-  }
 
   handleUserTimeout() {
     this.userTimeout = setTimeout(() => {

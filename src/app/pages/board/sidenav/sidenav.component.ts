@@ -25,6 +25,10 @@ export class SidenavComponent {
     }
   }
 
+  selectChannel(index: number) {
+    this.boardStateService.indexOfCurrentChannel.set(index);
+  }
+
   onHeaderClick() {
     if (!this.channelHeaderIsClicked()) {
       this.channelHeaderIsClicked.set(true)

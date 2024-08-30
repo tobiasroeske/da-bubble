@@ -67,7 +67,7 @@
             <div class="channel-links-container"
                 [ngStyle]="{'display': channelHeaderIsClicked() ? '' : 'none', 'transform': canTranslateYChannel() ? 'translateY(0%)' : 'translateY(-200%)' }">
                 @for(channel of channels(); track channel.id; let index = $index){
-                <div id="{{index}}" class="channel">
+                <div id="{{index}}" class="channel" (click)="selectChannel(index)">
                     <svg class="hashtagIcon" width="17" height="17" viewBox="0 0 17 17" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
                         <path
