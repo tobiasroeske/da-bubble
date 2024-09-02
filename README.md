@@ -44,7 +44,7 @@ Diese Chat Messenger App wurde entwickelt, um die Kommunikation in Business Team
 
 - **Frontend:** Angular
 - **Backend:** Google Firebase (Firestore, Authentication)
-- **Programmiersprachen:** TypeScript, HTML, CSS
+- **Programmiersprachen:** TypeScript, HTML, SCSS
 - **Weitere Tools:** Angular Material für UI-Komponenten, RxJS für reaktive Programmierung
 
 ## Installation
