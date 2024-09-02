@@ -3,11 +3,14 @@ import { Channel } from '../../../shared/models/channel.model';
 import { BoardStateService } from '../../../shared/services/board-state-service/board-state.service';
 import { UserService } from '../../../shared/services/firestore/user-service/user.service';
 import { User } from '../../../shared/models/user.model';
+import { MembersDialogComponent } from "./members-dialog/members-dialog.component";
+import { AddMemberDialogComponent } from "./add-member-dialog/add-member-dialog.component";
+import { ChatfieldStateService } from '../../../shared/services/chatfield-state-service/chatfield-state.service';
 
 @Component({
   selector: 'app-chatfield',
   standalone: true,
-  imports: [],
+  imports: [MembersDialogComponent, AddMemberDialogComponent],
   templateUrl: './chatfield.component.html',
   styleUrl: './chatfield.component.scss'
 })
@@ -16,6 +19,7 @@ export class ChatfieldComponent implements OnInit {
 
   boardStateService = inject(BoardStateService);
   userService = inject(UserService);
+  chatfieldStateService = inject(ChatfieldStateService);
 
   channelMembers = signal<User[]>([]);
   userSignal = this.userService.getUserSignal();
@@ -25,8 +29,6 @@ export class ChatfieldComponent implements OnInit {
     
     effect(() => {
       this.currentChannel = this.getCurrentChannel();
-      console.log('All loaded channels',this.channels());
-      console.log('All loaded users:',this.userSignal())
     })
   }
 
